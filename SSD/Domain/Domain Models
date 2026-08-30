@@ -1,1 +1,22 @@
+# Modelo de dominio
 
+## Introducción
+
+El modelo de dominio representa las principales entidades comerciales del sistema NexusMarket. Estas entidades representan los conceptos fundamentales relacionados con la administración de usuarios, compradores, vendedores, productos, inventario, pedidos y procesos logísticos definidos en la especificación funcional del sistema.
+
+El modelo sigue los principios del diseño orientado a objetos y del Diseño Dirigido por el Dominio (DDD), buscando representar de forma clara las reglas de negocio, las relaciones entre los diferentes elementos del sistema y los ciclos de vida definidos para cada concepto.
+
+NexusMarket es una plataforma digital que actúa como intermediario comercial entre compradores y vendedores. El sistema administra procesos relacionados con el registro de usuarios, gestión de vendedores y compradores, catálogo de productos, inventario, carrito de compras, pedidos, facturación, envíos, devoluciones y reembolsos.
+
+El modelo de dominio distingue entre:
+
+- Usuarios, que representan a las personas autorizadas para interactuar con el sistema.
+- Compradores, que representan a los usuarios que realizan compras.
+- Vendedores, que representan a los responsables de comercializar productos.
+- Productos, que representan los bienes físicos o digitales ofrecidos en el Marketplace.
+- Inventario, que representa las existencias disponibles de productos asociadas a una bodega.
+- Pedidos, que representan las solicitudes de compra realizadas por los compradores.
+- Procesos comerciales y logísticos, que representan las actividades relacionadas con la facturación, los envíos, las devoluciones y los reembolsos.
+- Objetos de valor y catálogos, que representan conceptos controlados del dominio como roles, estados y tipos.
+
+El modelo también utiliza especialización mediante herencia cuando existe una relación de generalización válida dentro del dominio, y relaciones explícitas entre entidades para representar las dependencias comerciales.
