@@ -109,3 +109,48 @@ Entidad concreta.
 | cambiarRol(rol) | Cambia el rol del usuario respetando la regla de que cada usuario debe tener un único rol. |
 | cambiarEstado(estado) | Modifica el estado operativo del usuario. |
 | puedeRealizarOperacion() | Determina si el estado actual del usuario permite realizar operaciones dentro del sistema. |
+
+---
+
+# Carrito
+
+## Descripción
+
+Representa el carrito de compras utilizado por un comprador para seleccionar productos antes de confirmar una compra.
+
+El carrito permite agregar productos, modificar las cantidades y eliminar productos antes de generar un pedido.
+
+Un carrito pertenece a un único comprador y puede contener cero o más productos.
+
+### Tipo
+
+Entidad concreta.
+
+`Carrito` es una entidad porque mantiene un ciclo de vida propio dentro del proceso de compra y está asociado a un comprador específico.
+
+### Atributos
+
+| Atributo | Tipo | Descripción |
+|---|---|---|
+| identificador | String | Identificador único del carrito. |
+| comprador | Comprador | Comprador propietario del carrito. |
+| items | List<ItemCarrito> | Productos y cantidades seleccionados por el comprador. |
+
+### Relaciones
+
+- Un `Carrito` pertenece a un `Comprador`.
+- Un `Carrito` contiene cero o más `ItemCarrito`.
+- Cada `ItemCarrito` representa un producto seleccionado y su cantidad.
+- El carrito puede utilizarse para generar un `Pedido`.
+
+### Métodos
+
+| Método | Descripción |
+|---|---|
+| agregarProducto(producto, cantidad) | Agrega un producto al carrito o incrementa su cantidad. |
+| modificarCantidad(producto, cantidad) | Modifica la cantidad seleccionada de un producto. |
+| eliminarProducto(producto) | Elimina un producto del carrito. |
+| vaciar() | Elimina todos los productos seleccionados. |
+| calcularTotal() | Calcula el valor total de los productos contenidos en el carrito. |
+| estaVacio() | Determina si el carrito no contiene productos. |
+| generarPedido() | Inicia el proceso de confirmación de la compra y genera un pedido con los productos seleccionados. |
