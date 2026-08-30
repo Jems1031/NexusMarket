@@ -2,53 +2,160 @@
 
 ## Introducción
 
-El modelo de dominio representa los conceptos principales del negocio de NexusMarket relacionados con la administración de usuarios y la gestión de compradores.
+El modelo de dominio representa los conceptos principales del negocio de **NexusMarket** relacionados con los siguientes dominios:
 
-El modelo sigue los principios de la Programación Orientada a Objetos y del Diseño Dirigido por el Dominio (DDD), buscando representar las entidades, sus responsabilidades, atributos y relaciones dentro del negocio.
+- **Administración de Usuarios**
+- **Gestión de Compradores**
 
-Para este modelo se diferencian las entidades de los objetos de valor. Las entidades poseen identidad propia y un ciclo de vida, mientras que los objetos de valor representan conceptos del dominio definidos por sus valores y serán documentados en la carpeta `Domain Value Objects`.
+El modelo sigue los principios de la Programación Orientada a Objetos y del **Diseño Dirigido por el Dominio (DDD)**, buscando representar las entidades, responsabilidades, atributos, métodos, relaciones y reglas de negocio del sistema.
 
-Los dominios trabajados inicialmente son:
+En este documento se describen las clases que forman parte del modelo de dominio. Los objetos de valor, como estados, roles y otros conceptos definidos por sus valores, serán documentados posteriormente en la carpeta **Domain Value Objects**.
 
-- Administración de Usuarios.
-- Gestión de Compradores.
+Las entidades del dominio poseen identidad propia y un ciclo de vida. Las relaciones entre las entidades se representan explícitamente para reflejar las relaciones reales existentes dentro del negocio.
 
 ---
 
-# Jerarquía de clases de dominio
+# Dominios incluidos
+
+## Dominio 1: Administración de Usuarios
+
+Este dominio se encarga de representar y administrar los usuarios que interactúan con NexusMarket.
+
+El usuario posee información de identificación, un rol y un estado que determinan su participación y sus posibilidades de interacción dentro del sistema.
+
+### Conceptos principales
+
+- Usuario
+- Rol del usuario
+- Estado del usuario
+
+---
+
+## Dominio 2: Gestión de Compradores
+
+Este dominio representa a los usuarios que participan directamente en el proceso comercial de NexusMarket como compradores.
+
+El comprador puede administrar su información, utilizar un carrito de compras y realizar pedidos.
+
+### Conceptos principales
+
+- Comprador
+- Dirección
+- Carrito
+- ItemCarrito
+- Pedido
+- ItemPedido
+- Estado comercial
+- Estado del carrito
+- Estado del pedido
+
+---
+
+# Jerarquía y estructura de clases de dominio
+
+En este modelo no se utiliza herencia entre `Usuario` y `Comprador`, debido a que un comprador no representa una especialización de un usuario desde el punto de vista del dominio.
+
+Un comprador está asociado con un usuario.
+
+La estructura principal es:
 
 ```text
 Usuario
+
+Comprador
+├── Carrito
+│   └── ItemCarrito
 │
-└── Comprador
+└── Pedido
+    └── ItemPedido
 ```
 
-> Nota: `Comprador` se modela como una entidad asociada a un `Usuario` y no como una especialización heredada de `Usuario`, debido a que el rol de un usuario representa una responsabilidad dentro del sistema y no necesariamente una relación de herencia.
+Las relaciones entre las clases son las siguientes:
+
+```text
+Usuario
+   │
+   └── asociado a ─────────> Comprador
+                              │
+                              ├── posee ──────────> Carrito
+                              │                       │
+                              │                       └── contiene ──> ItemCarrito
+                              │
+                              └── realiza ─────────> Pedido
+                                                      │
+                                                      └── contiene ──> ItemPedido
+```
 
 ---
 
 # Relaciones de dominio
 
+## Usuario - Comprador
+
+Un `Usuario` puede estar asociado a un `Comprador`.
+
+La relación representa el hecho de que una identidad registrada en NexusMarket puede participar en el sistema como comprador.
+
 ```text
 Usuario
    │
-   ├── posee ───────────────> RolUsuario
+   └── puede estar asociado a ──> Comprador
+```
+
+---
+
+## Comprador - Carrito
+
+Un `Comprador` posee un `Carrito` para administrar los productos que desea adquirir antes de confirmar una compra.
+
+```text
+Comprador
    │
-   ├── posee ───────────────> EstadoUsuario
+   └── posee ──> Carrito
+```
+
+Un carrito pertenece a un único comprador.
+
+---
+
+## Carrito - ItemCarrito
+
+Un `Carrito` contiene los elementos seleccionados por el comprador.
+
+Cada `ItemCarrito` representa un producto y la cantidad seleccionada.
+
+```text
+Carrito
    │
-   └── puede representar ──> Comprador
-                                  │
-                                  ├── posee ─────────────> Direccion
-                                  │
-                                  ├── posee ─────────────> EstadoComercial
-                                  │
-                                  ├── administra ─────────> Carrito
-                                  │                           │
-                                  │                           └── contiene ──> ItemCarrito
-                                  │
-                                  └── realiza ─────────────> Pedido
-                                                              │
-                                                              └── contiene ──> ItemPedido
+   └── contiene ──> ItemCarrito
+```
+
+---
+
+## Comprador - Pedido
+
+Un `Comprador` puede realizar pedidos dentro de NexusMarket.
+
+```text
+Comprador
+   │
+   └── realiza ──> Pedido
+```
+
+Un pedido pertenece a un único comprador.
+
+---
+
+## Pedido - ItemPedido
+
+Un `Pedido` contiene los productos que fueron incluidos en la compra.
+
+Cada `ItemPedido` representa un producto, su cantidad y el precio que tenía en el momento de realizar el pedido.
+
+```text
+Pedido
+   │
+   └── contiene ──> ItemPedido
 ```
 
 ---
@@ -59,44 +166,44 @@ Usuario
 
 ### Descripción
 
-Representa a una persona autorizada para interactuar con NexusMarket.
+Representa a una persona registrada y autorizada para interactuar con NexusMarket.
 
-El usuario constituye una entidad central del dominio de Administración de Usuarios y permite identificar a los participantes que interactúan con el Marketplace.
+El usuario constituye una entidad central del dominio de **Administración de Usuarios**, ya que permite identificar a las personas que interactúan con la plataforma.
 
-Cada usuario posee un identificador único, información básica de identificación, un correo electrónico único, un único rol dentro del sistema y un estado operativo.
+Cada usuario posee una identidad propia, información básica de identificación, un correo electrónico, un rol y un estado.
 
 ### Tipo
 
-Entidad concreta.
+**Entidad concreta.**
 
-`Usuario` no es una clase abstracta porque representa directamente a los usuarios registrados en el sistema.
+`Usuario` no es una clase abstracta porque representa directamente a un usuario registrado dentro del sistema.
 
 ### Atributos
 
 | Atributo | Tipo | Descripción |
 |---|---|---|
-| identificador | String | Identifica de forma única al usuario dentro de NexusMarket. |
-| nombreCompleto | String | Nombre oficial del usuario. No puede estar vacío. |
-| correoElectronico | String | Medio principal de acceso y comunicación. Debe ser único dentro de la plataforma. |
-| rol | RolUsuario | Define las responsabilidades del usuario dentro del sistema. |
-| estado | EstadoUsuario | Representa la condición operativa actual del usuario. |
+| identificador | String | Identificador único del usuario dentro de NexusMarket. |
+| nombreCompleto | String | Nombre completo del usuario. |
+| correoElectronico | String | Correo electrónico utilizado para comunicación e identificación dentro del sistema. |
+| rol | RolUsuario | Rol que determina las responsabilidades del usuario dentro del sistema. |
+| estado | EstadoUsuario | Estado actual del usuario dentro de NexusMarket. |
 
 ### Relaciones
 
-- Un `Usuario` posee exactamente un `RolUsuario`.
-- Un `Usuario` posee exactamente un `EstadoUsuario`.
+- Un `Usuario` posee un `RolUsuario`.
+- Un `Usuario` posee un `EstadoUsuario`.
 - Un `Usuario` puede estar asociado a un `Comprador`.
-- El usuario solamente puede desempeñar un único rol dentro del sistema.
+- Un usuario puede realizar las operaciones permitidas de acuerdo con su rol y estado.
 
 ### Métodos
 
 | Método | Descripción |
 |---|---|
-| actualizarNombre(nombreCompleto) | Actualiza el nombre completo del usuario validando que no esté vacío. |
-| cambiarCorreo(correoElectronico) | Actualiza el correo electrónico del usuario respetando las reglas de validación y unicidad. |
-| cambiarRol(rol) | Cambia el rol asignado al usuario de acuerdo con las reglas del sistema. |
+| actualizarNombre(nombreCompleto) | Actualiza el nombre completo del usuario. |
+| cambiarCorreo(correoElectronico) | Actualiza el correo electrónico del usuario aplicando las validaciones correspondientes. |
+| cambiarRol(rol) | Modifica el rol asignado al usuario de acuerdo con las reglas del sistema. |
 | cambiarEstado(estado) | Modifica el estado operativo del usuario. |
-| puedeRealizarOperacion() | Determina si el estado actual del usuario permite realizar operaciones dentro del sistema. |
+| puedeRealizarOperacion() | Determina si el estado y las condiciones del usuario permiten realizar operaciones dentro del sistema. |
 
 ---
 
@@ -104,47 +211,46 @@ Entidad concreta.
 
 ## Descripción
 
-Representa a un usuario de NexusMarket que participa en los procesos comerciales como comprador.
+Representa a un usuario de NexusMarket que participa en el sistema como comprador.
 
-El comprador puede seleccionar productos, administrar su información de entrega, utilizar un carrito de compras y confirmar pedidos.
+El comprador puede administrar su información de entrega, utilizar un carrito de compras y realizar pedidos.
 
-El comprador debe poseer una dirección principal y un estado comercial. También puede registrar direcciones adicionales para sus entregas.
+El comprador mantiene una relación con un `Usuario`, pero no hereda de él, ya que ambos representan conceptos diferentes dentro del dominio.
 
 ### Tipo
 
-Entidad concreta.
+**Entidad concreta.**
 
-`Comprador` es una entidad porque representa a un participante del negocio con información y relaciones propias dentro del proceso de compra.
+`Comprador` es una entidad porque posee relaciones y comportamiento propio dentro del proceso comercial.
 
 ### Atributos
 
 | Atributo | Tipo | Descripción |
 |---|---|---|
 | usuario | Usuario | Usuario del sistema asociado al comprador. |
-| direccionPrincipal | Direccion | Dirección habitual utilizada para las entregas. Es obligatoria. |
-| direccionesAdicionales | List\<Direccion> | Direcciones secundarias disponibles para las entregas. Son opcionales. |
-| estadoComercial | EstadoComercial | Condición comercial actual del comprador. Es obligatorio. |
+| direccionPrincipal | Direccion | Dirección principal utilizada por el comprador para sus entregas. |
+| direccionesAdicionales | List<Direccion> | Direcciones adicionales registradas por el comprador. |
+| estadoComercial | EstadoComercial | Estado comercial actual del comprador. |
 
 ### Relaciones
 
 - Un `Comprador` está asociado a un `Usuario`.
-- Un `Comprador` posee una `Direccion` principal.
-- Un `Comprador` puede poseer cero o más direcciones adicionales.
-- Un `Comprador` posee un `EstadoComercial`.
+- Un `Comprador` posee una dirección principal.
+- Un `Comprador` puede registrar direcciones adicionales.
+- Un `Comprador` posee un estado comercial.
 - Un `Comprador` posee un `Carrito`.
-- Un `Comprador` puede realizar uno o más `Pedido`.
-- Las direcciones utilizadas por el comprador serán modeladas como objetos de valor.
+- Un `Comprador` puede realizar múltiples `Pedido`.
 
 ### Métodos
 
 | Método | Descripción |
 |---|---|
-| actualizarDireccionPrincipal(direccion) | Actualiza la dirección principal utilizada para las entregas. |
-| agregarDireccionAdicional(direccion) | Agrega una dirección secundaria para entregas. |
-| eliminarDireccionAdicional(direccion) | Elimina una dirección secundaria registrada. |
+| actualizarDireccionPrincipal(direccion) | Actualiza la dirección principal del comprador. |
+| agregarDireccionAdicional(direccion) | Registra una nueva dirección adicional. |
+| eliminarDireccionAdicional(direccion) | Elimina una dirección adicional registrada. |
 | cambiarEstadoComercial(estado) | Modifica el estado comercial del comprador. |
-| puedeComprar() | Determina si el estado comercial permite realizar compras. |
-| confirmarPedido() | Inicia la confirmación de un pedido seleccionado por el comprador. |
+| puedeComprar() | Determina si el comprador se encuentra habilitado para realizar compras. |
+| confirmarPedido() | Confirma la intención de realizar un pedido a partir de los productos seleccionados. |
 
 ---
 
@@ -152,15 +258,15 @@ Entidad concreta.
 
 ## Descripción
 
-Representa el carrito de compras utilizado por un comprador para seleccionar productos antes de confirmar una compra.
+Representa el carrito de compras utilizado por un comprador para seleccionar productos antes de realizar un pedido.
 
-El carrito permite agregar productos, modificar cantidades y eliminar productos antes de generar un pedido.
+El carrito permite agregar productos, modificar cantidades, eliminar productos y calcular el valor total de los productos seleccionados.
 
 ### Tipo
 
-Entidad concreta.
+**Entidad concreta.**
 
-`Carrito` se considera una entidad porque posee un ciclo de vida dentro del proceso de compra y pertenece a un comprador determinado.
+`Carrito` posee un ciclo de vida dentro del proceso de compra y pertenece a un comprador específico.
 
 ### Atributos
 
@@ -168,28 +274,28 @@ Entidad concreta.
 |---|---|---|
 | identificador | String | Identificador único del carrito. |
 | comprador | Comprador | Comprador propietario del carrito. |
-| items | List\<ItemCarrito> | Productos y cantidades seleccionados por el comprador. |
-| estado | EstadoCarrito | Estado actual del carrito dentro del proceso de compra. |
+| items | List<ItemCarrito> | Elementos que contiene actualmente el carrito. |
+| estado | EstadoCarrito | Estado actual del carrito. |
 
 ### Relaciones
 
 - Un `Carrito` pertenece a un `Comprador`.
 - Un `Carrito` contiene cero o más `ItemCarrito`.
-- Cada `ItemCarrito` representa un producto seleccionado y una cantidad.
+- Cada `ItemCarrito` representa un producto seleccionado.
 - Un `Carrito` puede utilizarse para generar un `Pedido`.
 
 ### Métodos
 
 | Método | Descripción |
 |---|---|
-| agregarProducto(producto, cantidad) | Agrega un producto al carrito o incrementa su cantidad. |
+| agregarProducto(producto, cantidad) | Agrega un producto al carrito o aumenta la cantidad de un producto existente. |
 | modificarCantidad(producto, cantidad) | Modifica la cantidad seleccionada de un producto. |
 | eliminarProducto(producto) | Elimina un producto del carrito. |
-| vaciar() | Elimina los productos contenidos actualmente en el carrito. |
+| vaciar() | Elimina todos los elementos del carrito. |
 | calcularTotal() | Calcula el valor total de los productos contenidos en el carrito. |
 | estaVacio() | Determina si el carrito no contiene productos. |
-| generarPedido() | Genera un pedido a partir de los productos seleccionados en el carrito. |
-| cambiarEstado(estado) | Cambia el estado del carrito de acuerdo con las reglas del dominio. |
+| generarPedido() | Genera un pedido utilizando los productos seleccionados en el carrito. |
+| cambiarEstado(estado) | Modifica el estado del carrito respetando las reglas del dominio. |
 
 ---
 
@@ -197,15 +303,15 @@ Entidad concreta.
 
 ## Descripción
 
-Representa un producto seleccionado dentro del carrito de compras y la cantidad que el comprador desea adquirir.
+Representa un producto seleccionado dentro del carrito y la cantidad que el comprador desea adquirir.
 
-Es necesario para representar correctamente la relación entre un carrito, un producto y la cantidad seleccionada.
+Esta clase permite representar la relación entre el carrito, el producto y la cantidad seleccionada.
 
 ### Tipo
 
-Clase dependiente del `Carrito`.
+**Clase dependiente.**
 
-`ItemCarrito` no tiene sentido dentro del dominio de compras sin estar asociado a un carrito.
+`ItemCarrito` forma parte del `Carrito` y no representa por sí mismo una entidad comercial independiente.
 
 ### Atributos
 
@@ -224,7 +330,7 @@ Clase dependiente del `Carrito`.
 | Método | Descripción |
 |---|---|
 | cambiarCantidad(cantidad) | Modifica la cantidad del producto seleccionado. |
-| calcularSubtotal(precio) | Calcula el subtotal correspondiente al producto y la cantidad seleccionada. |
+| calcularSubtotal(precio) | Calcula el subtotal correspondiente a la cantidad seleccionada. |
 
 ---
 
@@ -234,15 +340,15 @@ Clase dependiente del `Carrito`.
 
 Representa una solicitud de compra realizada por un comprador dentro de NexusMarket.
 
-El pedido se genera cuando el comprador confirma los productos seleccionados en su carrito.
+El pedido se genera a partir de los productos seleccionados por el comprador y confirmados para realizar una compra.
 
-El pedido mantiene la información necesaria para gestionar el proceso de compra desde su creación hasta su entrega o cancelación.
+El pedido mantiene la información necesaria para representar el ciclo de vida de una compra.
 
 ### Tipo
 
-Entidad concreta.
+**Entidad concreta.**
 
-`Pedido` es una entidad porque posee una identidad propia y mantiene un ciclo de vida mediante diferentes estados.
+`Pedido` posee una identidad propia y mantiene un ciclo de vida mediante diferentes estados.
 
 ### Atributos
 
@@ -250,9 +356,9 @@ Entidad concreta.
 |---|---|---|
 | identificador | String | Identificador único del pedido. |
 | comprador | Comprador | Comprador que realizó el pedido. |
-| items | List\<ItemPedido> | Productos incluidos en el pedido y sus cantidades. |
-| fechaCreacion | LocalDateTime | Fecha y hora en que se creó el pedido. |
-| estado | EstadoPedido | Estado actual del ciclo de vida del pedido. |
+| items | List<ItemPedido> | Productos incluidos en el pedido y sus cantidades. |
+| fechaCreacion | LocalDateTime | Fecha y hora en la que se creó el pedido. |
+| estado | EstadoPedido | Estado actual del pedido. |
 | direccionEntrega | Direccion | Dirección seleccionada para realizar la entrega. |
 | total | BigDecimal | Valor total de los productos incluidos en el pedido. |
 
@@ -260,22 +366,22 @@ Entidad concreta.
 
 - Un `Pedido` pertenece a un `Comprador`.
 - Un `Pedido` contiene uno o más `ItemPedido`.
-- Cada `ItemPedido` representa un producto incluido en el pedido y su cantidad.
-- Un `Pedido` posee una `Direccion` de entrega.
-- Un `Pedido` posee un `EstadoPedido`.
+- Cada `ItemPedido` representa un producto incluido en el pedido.
+- Un `Pedido` posee una dirección de entrega.
+- Un `Pedido` posee un estado.
 - Un `Pedido` puede cambiar de estado durante su ciclo de vida.
 
 ### Métodos
 
 | Método | Descripción |
 |---|---|
-| calcularTotal() | Calcula el valor total del pedido a partir de sus productos y cantidades. |
+| calcularTotal() | Calcula el valor total del pedido a partir de sus elementos. |
 | cambiarDireccionEntrega(direccion) | Cambia la dirección de entrega cuando las reglas del pedido lo permiten. |
 | confirmar() | Confirma el pedido y actualiza su estado. |
 | cancelar() | Cancela el pedido cuando las reglas del dominio lo permiten. |
-| puedeSerCancelado() | Determina si el estado actual permite cancelar el pedido. |
-| estaEntregado() | Determina si el pedido alcanzó el estado entregado. |
-| cambiarEstado(estado) | Cambia el estado del pedido respetando las reglas de su ciclo de vida. |
+| puedeSerCancelado() | Determina si el pedido puede ser cancelado según su estado actual. |
+| estaEntregado() | Determina si el pedido ha alcanzado el estado de entrega. |
+| cambiarEstado(estado) | Cambia el estado del pedido respetando las reglas del ciclo de vida. |
 
 ---
 
@@ -283,23 +389,23 @@ Entidad concreta.
 
 ## Descripción
 
-Representa un producto específico incluido dentro de un pedido y la cantidad solicitada por el comprador.
+Representa un producto específico incluido dentro de un pedido, junto con la cantidad solicitada y el precio que tenía el producto al momento de realizar la compra.
 
-Permite mantener la relación entre el pedido, el producto comprado y la cantidad solicitada.
+Permite conservar la información de la compra incluso si posteriormente cambia el precio del producto.
 
 ### Tipo
 
-Clase dependiente del `Pedido`.
+**Clase dependiente.**
 
-`ItemPedido` existe como parte de un pedido y no representa una entidad comercial independiente.
+`ItemPedido` forma parte de un `Pedido` y no representa una entidad comercial independiente.
 
 ### Atributos
 
 | Atributo | Tipo | Descripción |
 |---|---|---|
 | producto | Producto | Producto incluido en el pedido. |
-| cantidad | Integer | Número de unidades del producto incluidas en el pedido. |
-| precioUnitario | BigDecimal | Precio del producto en el momento de realizar la compra. |
+| cantidad | Integer | Número de unidades solicitadas. |
+| precioUnitario | BigDecimal | Precio del producto en el momento en que se realizó la compra. |
 
 ### Relaciones
 
@@ -311,47 +417,90 @@ Clase dependiente del `Pedido`.
 
 | Método | Descripción |
 |---|---|
-| cambiarCantidad(cantidad) | Modifica la cantidad solicitada validando que sea válida. |
+| cambiarCantidad(cantidad) | Modifica la cantidad solicitada cuando las reglas del pedido lo permiten. |
 | calcularSubtotal() | Calcula el subtotal multiplicando el precio unitario por la cantidad. |
+
+---
+
+# Producto
+
+## Descripción
+
+`Producto` aparece como un concepto relacionado con el proceso de compra, ya que tanto `ItemCarrito` como `ItemPedido` necesitan hacer referencia al producto seleccionado o comprado.
+
+Sin embargo, la definición completa de `Producto` no pertenece a los dominios de **Administración de Usuarios** ni **Gestión de Compradores**.
+
+Por esta razón, `Producto` se considera una entidad perteneciente a otro dominio funcional de NexusMarket y su definición completa deberá realizarse cuando se documente dicho dominio.
+
+### Tipo
+
+**Entidad de otro dominio.**
+
+### Uso dentro del modelo
+
+```text
+Carrito
+   │
+   └── ItemCarrito
+          │
+          └── Producto
+
+
+Pedido
+   │
+   └── ItemPedido
+          │
+          └── Producto
+```
 
 ---
 
 # Reglas de negocio del dominio
 
-## Administración de usuarios
+## Administración de Usuarios
 
-- Cada usuario debe tener un identificador único.
-- El nombre completo del usuario es obligatorio y no puede estar vacío.
-- El correo electrónico del usuario es obligatorio y debe ser único.
-- Cada usuario debe tener un único rol.
-- Cada usuario debe tener un estado.
-- Un usuario solamente puede realizar las operaciones permitidas por su rol y estado.
+1. Cada usuario debe poseer un identificador único.
+2. El nombre completo del usuario es obligatorio.
+3. El correo electrónico del usuario es obligatorio.
+4. El correo electrónico debe ser único dentro de la plataforma.
+5. Cada usuario debe tener un único rol.
+6. Cada usuario debe tener un estado.
+7. Las operaciones que puede realizar un usuario dependen de su rol y estado.
 
-## Gestión de compradores
+---
 
-- Un comprador debe tener una dirección principal.
-- Un comprador puede registrar direcciones adicionales.
-- Un comprador debe tener un estado comercial.
-- Un comprador puede administrar su propio carrito.
-- Un comprador puede realizar compras mediante pedidos.
-- Un comprador no puede administrar información perteneciente a otros compradores.
-- Las direcciones adicionales son opcionales.
+## Gestión de Compradores
+
+1. Un comprador debe estar asociado a un usuario.
+2. Un comprador debe poseer una dirección principal.
+3. Un comprador puede registrar direcciones adicionales.
+4. Un comprador debe poseer un estado comercial.
+5. Un comprador puede administrar su propio carrito.
+6. Un comprador puede realizar pedidos cuando se encuentre habilitado para comprar.
+7. Un comprador no puede administrar información perteneciente a otros compradores.
+
+---
 
 ## Carrito
 
-- Un carrito pertenece a un único comprador.
-- Un carrito puede contener cero o más productos.
-- Cada producto seleccionado debe tener una cantidad válida.
-- El total del carrito debe corresponder a la suma de los subtotales de sus productos.
-- El carrito puede utilizarse para generar un pedido.
+1. Un carrito pertenece a un único comprador.
+2. Un carrito puede contener cero o más elementos.
+3. Cada elemento del carrito debe representar un producto.
+4. La cantidad de un producto debe ser válida.
+5. El total del carrito corresponde a la suma de los subtotales de sus elementos.
+6. Un carrito puede utilizarse para generar un pedido.
+
+---
 
 ## Pedido
 
-- Un pedido pertenece a un único comprador.
-- Un pedido debe contener los productos seleccionados por el comprador.
-- El pedido posee un estado que representa su ciclo de vida.
-- El pedido puede cambiar de estado únicamente cuando las reglas del dominio lo permitan.
-- La dirección de entrega corresponde a una dirección registrada por el comprador.
+1. Un pedido pertenece a un único comprador.
+2. Un pedido debe contener los productos seleccionados para la compra.
+3. Cada pedido posee un estado que representa su ciclo de vida.
+4. Los cambios de estado deben respetar las reglas definidas por el dominio.
+5. El pedido debe conservar el precio unitario del producto en el momento de la compra.
+6. Un pedido posee una dirección de entrega.
+7. Un pedido solamente puede ser cancelado cuando su estado lo permita.
 
 ---
 
@@ -365,32 +514,116 @@ Clase dependiente del `Pedido`.
 | ItemCarrito | Clase dependiente | No |
 | Pedido | Entidad | No |
 | ItemPedido | Clase dependiente | No |
+| Producto | Entidad de otro dominio | No definido |
 | RolUsuario | Objeto de valor | No aplica |
 | EstadoUsuario | Objeto de valor | No aplica |
 | EstadoComercial | Objeto de valor | No aplica |
 | EstadoCarrito | Objeto de valor | No aplica |
 | EstadoPedido | Objeto de valor | No aplica |
 | Direccion | Objeto de valor | No aplica |
-| Producto | Entidad de otro dominio | No definido todavía |
 
 ---
 
-# Nota sobre otros dominios
+# Herencia de las clases
 
-`Producto` aparece como concepto relacionado con el proceso de compra, pero pertenece a otros dominios funcionales de NexusMarket.
+Dentro de los dominios de **Administración de Usuarios** y **Gestión de Compradores** no se identifica una especialización que requiera utilizar herencia entre las entidades principales.
 
-Por esta razón, en este modelo no se desarrolla todavía su definición completa.
+La relación entre `Usuario` y `Comprador` es una **asociación**, no una relación de herencia.
 
-Su definición deberá realizarse posteriormente al trabajar el dominio correspondiente a la gestión de productos.
+Por lo tanto:
+
+```text
+Usuario
+   │
+   └── asociación ──> Comprador
+```
+
+y no:
+
+```text
+Usuario
+   │
+   └── herencia ──> Comprador
+```
+
+Esto permite mantener separadas las responsabilidades de administración de identidad y participación comercial.
 
 ---
 
-# Principios DDD aplicados
+# Arquitectura DDD aplicada al modelo
 
-- Las entidades poseen identidad propia.
-- Los objetos de valor no poseen identidad propia y se definen mediante sus valores.
-- Las relaciones entre conceptos del dominio se representan explícitamente.
-- Los atributos representan conceptos propios del negocio.
-- Los estados y roles controlados se modelan como objetos de valor y no como cadenas de texto arbitrarias.
-- Las responsabilidades de las entidades se representan mediante métodos de dominio.
-- Se evita utilizar identificadores genéricos para representar relaciones entre objetos del dominio.
+El modelo utiliza conceptos fundamentales del **Domain-Driven Design (DDD)**.
+
+## Entidades
+
+Las entidades poseen una identidad propia que permite diferenciarlas durante su ciclo de vida.
+
+En este modelo:
+
+- `Usuario`
+- `Comprador`
+- `Carrito`
+- `Pedido`
+
+son entidades del dominio.
+
+---
+
+## Clases dependientes
+
+Las clases `ItemCarrito` e `ItemPedido` existen como parte de sus respectivas entidades principales.
+
+```text
+Carrito
+   └── ItemCarrito
+
+Pedido
+   └── ItemPedido
+```
+
+Estas clases representan elementos necesarios para modelar correctamente la composición del carrito y del pedido.
+
+---
+
+## Objetos de valor
+
+Los conceptos que no requieren identidad propia y que se definen mediante sus valores se modelarán como objetos de valor.
+
+Entre ellos se encuentran:
+
+- `RolUsuario`
+- `EstadoUsuario`
+- `EstadoComercial`
+- `EstadoCarrito`
+- `EstadoPedido`
+- `Direccion`
+
+Estos conceptos serán documentados en la carpeta:
+
+```text
+Domain Value Objects
+```
+
+---
+
+# Resumen del modelo
+
+El modelo de dominio de NexusMarket para los dominios de **Administración de Usuarios** y **Gestión de Compradores** está compuesto principalmente por las siguientes entidades:
+
+```text
+Usuario
+   │
+   └── Comprador
+         │
+         ├── Carrito
+         │     └── ItemCarrito
+         │             └── Producto
+         │
+         └── Pedido
+               └── ItemPedido
+                       └── Producto
+```
+
+Las entidades representan los conceptos que poseen identidad y comportamiento dentro del negocio.
+
+Los estados, roles y direcciones se manejarán posteriormente como objetos de valor independientes para mantener una separación clara entre entidades y valores del dominio.
