@@ -2,21 +2,16 @@
 
 ## Introducción
 
-El modelo de dominio representa las principales entidades comerciales del sistema NexusMarket. Estas entidades representan los conceptos fundamentales relacionados con la administración de usuarios, compradores, vendedores, productos, inventario, pedidos y procesos logísticos definidos en la especificación funcional del sistema.
+El modelo de dominio de NexusMarket representa los principales conceptos de negocio involucrados en la administración de usuarios y la gestión de compradores dentro de la plataforma.
 
-El modelo sigue los principios del diseño orientado a objetos y del Diseño Dirigido por el Dominio (DDD), buscando representar de forma clara las reglas de negocio, las relaciones entre los diferentes elementos del sistema y los ciclos de vida definidos para cada concepto.
+El modelo se desarrolla siguiendo los principios de Programación Orientada a Objetos (POO) y Diseño Dirigido por el Dominio (DDD). Su objetivo es representar las entidades, relaciones, estados, responsabilidades y reglas de negocio que forman parte del sistema.
 
-NexusMarket es una plataforma digital que actúa como intermediario comercial entre compradores y vendedores. El sistema administra procesos relacionados con el registro de usuarios, gestión de vendedores y compradores, catálogo de productos, inventario, carrito de compras, pedidos, facturación, envíos, devoluciones y reembolsos.
+NexusMarket es un Marketplace digital que permite la interacción entre compradores y vendedores. Dentro de los dominios analizados se encuentran la administración de usuarios y la gestión de compradores, incluyendo la información de identificación, roles, estados, direcciones, carritos de compra y pedidos.
 
-El modelo de dominio distingue entre:
+El modelo diferencia entre entidades, objetos de valor y conceptos enumerados. Las entidades poseen una identidad propia y un ciclo de vida, mientras que los objetos de valor representan conceptos definidos por sus atributos y no poseen una identidad independiente.
 
-- Usuarios, que representan a las personas autorizadas para interactuar con el sistema.
-- Compradores, que representan a los usuarios que realizan compras.
-- Vendedores, que representan a los responsables de comercializar productos.
-- Productos, que representan los bienes físicos o digitales ofrecidos en el Marketplace.
-- Inventario, que representa las existencias disponibles de productos asociadas a una bodega.
-- Pedidos, que representan las solicitudes de compra realizadas por los compradores.
-- Procesos comerciales y logísticos, que representan las actividades relacionadas con la facturación, los envíos, las devoluciones y los reembolsos.
-- Objetos de valor y catálogos, que representan conceptos controlados del dominio como roles, estados y tipos.
+El modelo también utiliza herencia cuando existe una especialización real entre conceptos del dominio y relaciones explícitas entre las entidades para representar sus asociaciones comerciales.
 
-El modelo también utiliza especialización mediante herencia cuando existe una relación de generalización válida dentro del dominio, y relaciones explícitas entre entidades para representar las dependencias comerciales.
+---
+
+# Jerarquía de clases de dominio
