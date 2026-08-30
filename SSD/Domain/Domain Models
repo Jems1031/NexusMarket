@@ -15,3 +15,51 @@ El modelo también utiliza herencia cuando existe una especialización real entr
 ---
 
 # Jerarquía de clases de dominio
+
+## Usuario
+
+### Descripción
+
+Representa a una persona autorizada para interactuar con NexusMarket.
+
+El usuario constituye una entidad central del dominio de Administración de Usuarios y permite identificar a los participantes que interactúan con el Marketplace.
+
+Cada usuario posee un identificador único, información básica de identificación, un correo electrónico único, un único rol dentro del sistema y un estado operativo.
+
+De acuerdo con las reglas generales del sistema, cada usuario tendrá un único rol y ninguna persona podrá administrar información fuera de las responsabilidades correspondientes a dicho rol.
+
+### Tipo
+
+Entidad concreta.
+
+El `Usuario` no es una clase abstracta porque representa directamente a los usuarios registrados en el sistema.
+
+### Atributos
+
+| Atributo | Tipo | Descripción |
+|---|---|---|
+| identificador | String | Identifica de forma única al usuario dentro de NexusMarket. |
+| nombreCompleto | String | Nombre oficial del usuario. No puede estar vacío. |
+| correoElectronico | String | Medio principal de acceso y comunicación. Debe ser único dentro de la plataforma. |
+| rol | RolUsuario | Define las responsabilidades y permisos del usuario dentro del sistema. |
+| estado | EstadoUsuario | Representa la condición operativa actual del usuario. |
+
+### Relaciones
+
+- Un `Usuario` posee exactamente un `RolUsuario`.
+- Un `Usuario` posee exactamente un `EstadoUsuario`.
+- Un `Usuario` puede actuar como `Comprador`.
+- Un `Usuario` puede actuar como `Vendedor`.
+- Un `Usuario` puede actuar como `OperadorLogistico`.
+- Un `Usuario` puede actuar como `Administrador`.
+- Un `Usuario` puede actuar como `Supervisor`.
+
+### Métodos
+
+| Método | Descripción |
+|---|---|
+| actualizarNombre(nombreCompleto) | Actualiza el nombre completo del usuario validando que no esté vacío. |
+| cambiarCorreo(correoElectronico) | Actualiza el correo electrónico verificando que cumpla las reglas de unicidad y formato definidas por el sistema. |
+| cambiarRol(rol) | Cambia el rol del usuario respetando la regla de que cada usuario debe tener un único rol. |
+| cambiarEstado(estado) | Modifica el estado operativo del usuario. |
+| puedeRealizarOperacion() | Determina si el estado actual del usuario permite realizar operaciones dentro del sistema. |
