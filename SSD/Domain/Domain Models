@@ -60,6 +60,52 @@ El `Usuario` no es una clase abstracta porque representa directamente a los usua
 |---|---|
 | actualizarNombre(nombreCompleto) | Actualiza el nombre completo del usuario validando que no esté vacío. |
 | cambiarCorreo(correoElectronico) | Actualiza el correo electrónico verificando que cumpla las reglas de unicidad y formato definidas por el sistema. |
+
+---
+
+# Comprador
+
+## Descripción
+
+Representa a un usuario de NexusMarket que participa en los procesos comerciales como comprador y realiza compras de productos publicados en la plataforma.
+
+El comprador administra la información necesaria para participar en los procesos de compra y entrega.
+
+De acuerdo con las reglas del dominio, el comprador no puede administrar información perteneciente a otros compradores ni gestionar inventarios.
+
+### Tipo
+
+Entidad concreta.
+
+`Comprador` no es una clase abstracta porque representa directamente al participante que realiza compras dentro de NexusMarket.
+
+### Atributos
+
+| Atributo | Tipo | Descripción |
+|---|---|---|
+| usuario | Usuario | Usuario del sistema al que pertenece el comprador. |
+| direccionPrincipal | Direccion | Ubicación habitual utilizada para las entregas. Es obligatoria. |
+| direccionesAdicionales | List\<Direccion> | Ubicaciones secundarias disponibles para las entregas. Es opcional. |
+| estadoComercial | EstadoComercial | Condición actual del comprador para realizar compras. Es obligatorio. |
+
+### Relaciones
+
+- Un `Comprador` está asociado con un `Usuario`.
+- Un `Comprador` posee una `Direccion` principal.
+- Un `Comprador` puede tener cero o más `Direccion` adicionales.
+- Un `Comprador` posee un `EstadoComercial`.
+- Un `Comprador` puede realizar compras mediante pedidos.
+- Un `Comprador` utiliza un carrito de compras para seleccionar productos antes de confirmar un pedido.
+
+### Métodos
+
+| Método | Descripción |
+|---|---|
+| actualizarDireccionPrincipal(direccion) | Actualiza la dirección principal utilizada para las entregas. |
+| agregarDireccionAdicional(direccion) | Agrega una nueva dirección secundaria para entregas. |
+| eliminarDireccionAdicional(direccion) | Elimina una dirección secundaria registrada. |
+| cambiarEstadoComercial(estado) | Cambia el estado comercial del comprador de acuerdo con las reglas del dominio. |
+| puedeComprar() | Determina si el estado comercial actual permite realizar compras. |
 | cambiarRol(rol) | Cambia el rol del usuario respetando la regla de que cada usuario debe tener un único rol. |
 | cambiarEstado(estado) | Modifica el estado operativo del usuario. |
 | puedeRealizarOperacion() | Determina si el estado actual del usuario permite realizar operaciones dentro del sistema. |
