@@ -1,4 +1,4 @@
-# Domain Model
+# Modelo de dominio
 
 ## Introducción
 
