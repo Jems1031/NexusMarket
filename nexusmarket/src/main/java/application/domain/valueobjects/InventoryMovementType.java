@@ -27,14 +27,14 @@ public final class InventoryMovementType extends DomainCatalog {
             new InventoryMovementType(
                     "ADJUSTMENT",
                     "Adjustment",
-                    "Stock is modified due to a correction."
+                    "Stock is modified due to an inventory correction."
             );
 
     public static final InventoryMovementType RETURN =
             new InventoryMovementType(
                     "RETURN",
                     "Return",
-                    "Stock is added or adjusted because of a returned product."
+                    "Stock movement related to returned products."
             );
 
     private InventoryMovementType(String code, String name, String description) {

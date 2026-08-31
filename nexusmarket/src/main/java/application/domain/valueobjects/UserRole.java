@@ -6,7 +6,7 @@ public final class UserRole extends DomainCatalog {
             new UserRole("BUYER", "Buyer", "Person who purchases published products.");
 
     public static final UserRole SELLER =
-            new UserRole("SELLER", "Seller", "Person responsible for registering and managing products.");
+            new UserRole("SELLER", "Seller", "Person who registers and manages products.");
 
     public static final UserRole LOGISTICS_OPERATOR =
             new UserRole(

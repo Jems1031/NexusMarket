@@ -13,7 +13,7 @@ public final class ProductType extends DomainCatalog {
             new ProductType(
                     "DIGITAL",
                     "Digital",
-                    "Product delivered immediately after payment."
+                    "Product delivered after payment confirmation."
             );
 
     private ProductType(String code, String name, String description) {
